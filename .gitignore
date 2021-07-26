@@ -1,6 +1,7 @@
 .idea/
 app.py
-main.py
 venv/
 yahoo_finance_api.py
 yahoo_finance_screener.py
+__pycache__
+.vscode
