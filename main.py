@@ -1,7 +1,6 @@
 from __future__ import print_function, unicode_literals
 
 from PyInquirer import style_from_dict, Token, prompt, Separator
-from pprint import pprint
 from netnet.ExtractorSymbol import ExtractorSymbol
 
 style = style_from_dict({
@@ -251,7 +250,7 @@ questions = [
                 "value": "vn"
             },
         ],
-        'validate': lambda answer: 'You must choose at least one topping.' if len(answer) == 0 else True
+        'validate': lambda answer: 'You must choose at least one country.' if len(answer) == 0 else True
     }
 ]
 
