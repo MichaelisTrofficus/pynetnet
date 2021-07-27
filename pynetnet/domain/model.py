@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import List
+
 
 class Company:
     """
@@ -8,8 +10,23 @@ class Company:
 
      Attributes
      ----------
-     fundamentals : dict
-        Contains the parameters needed to assess if it's a net-net:
+     name: str
+     ticker: str
+     country: str
+     sector: str
+     market_cap: float
+     price_to_book: float
+     current_assets: float
+     total_liabilities: float
+     current_ratio: float
+     debt_to_equity: float
+
+     Methods
+     -------
+     __init__(fundamentals: dict):
+        Object creation. The parameter "fundamentals" contains data needed to assess if company is a net-net. For
+        example:
+
             {
                 "name": "Example", "ticker": "EXMPL", "country": "United States",
                 "sector": "Retail", "market_cap": 100000000, "price_to_book": 0.56,
@@ -17,16 +34,22 @@ class Company:
                 "current_ratio": 2.5, "debt_to_equity": 40
             }
 
-     Methods
-     -------
      _check():
         Checks if the data contained in the fundamentals is valid. If just one of the variables is not informed
         then the class will raise an InvalidCompanyError.
 
+     _generate_attributes(fundamentals: dict):
+        Generates all attributes from "fundamentals" dictionary
      """
+
     def __init__(self, fundamentals: dict):
         self._check(fundamentals)
         self._generate_attributes(fundamentals)
+
+    def __eq__(self, other):
+        if not isinstance(other, Company):
+            return False
+        return other.ticker == self.ticker
 
     @staticmethod
     def _check(fundamentals: dict):
@@ -34,7 +57,7 @@ class Company:
             if not value:
                 raise InvalidCompanyError
 
-    def _generate_attributes(self, fundamentals):
+    def _generate_attributes(self, fundamentals: dict):
 
         # TODO: maybe change with : [setattr(self, key, fundamentals[key]) for key in fundamentals]. Not clear enough?
         self.name = fundamentals.get("name")
@@ -93,7 +116,45 @@ class InvalidCompanyError(Exception):
 
 
 class NetNetFilter:
-    pass
+    """
+     Criteria pattern for selecting net-nets.
+
+     Methods
+     -------
+     filter_net_nets():
+        Filter those companies that satisfy the conditions to be considered as net-nets.
+     """
+
+    # TODO: We need to add more filters (preferred shares, company selling shares, NYSE, etc.)
+    @staticmethod
+    def filter_net_nets(companies: List[Company]) -> List[Company]:
+
+        net_nets = []
+        for company in companies:
+
+            net_net_rules = [
+                (1 / company.get_price_to_book()) > 1,  # Inverse of P/B greater than 1 (exclude negative values)
+                company.get_market_cap() > 1000000 or company.get_market_cap() < 100000000,
+                company.get_sector() != "Financial Services",
+                company.get_country() != "China",
+                company.get_preliminary_ncav() > 0,
+                company.get_preliminary_ncav() > company.get_market_cap(),
+                company.get_debt_to_equity() < 50,
+                company.get_current_ratio() > 1.5
+            ]
+
+            if all(net_net_rules):
+                net_nets.append(company)
+
+        return net_nets
+
+
+
+
+
+
+
+
 
 
 
