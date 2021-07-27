@@ -1,3 +1,4 @@
+# app
 certifi==2021.5.30
 charset-normalizer==2.0.3
 idna==3.2
@@ -10,3 +11,6 @@ six==1.16.0
 urllib3==1.26.6
 wcwidth==0.2.5
 yfinance==0.1.63
+
+# dev/tests
+pytest==6.2.4
