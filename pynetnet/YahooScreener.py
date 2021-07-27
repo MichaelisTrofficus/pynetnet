@@ -12,7 +12,31 @@ COMMON_HEADER = {'Connection': 'keep-alive',
                  }
 
 
-class ExtractorSymbol:
+class YahooScreener:
+    """
+     This class emulates the Yahoo Screener with the following filter params:
+
+        1. Small caps (in this case less than 100M)
+        2. Price to Book less than 1 (it's an initial estimate of an undervalued company)
+        3. Country -> we provide a selector for the user to choose a set of countries
+
+     Attributes
+     ----------
+     countries : List[str]
+         A list of countries
+     crumb : str
+         Crumb needed to fetch the data from Yahoo Screener
+     cookies : CookieJar
+         Cookies needed to fetch the data from Yahoo Screener
+
+     Methods
+     -------
+     _prepare():
+        Gets the crumb and the cookies from the website.
+
+     get_data():
+        Gets all the data fitting the provided filters.
+     """
 
     def __init__(self, countries: List[str]):
         self.countries = countries
@@ -25,14 +49,13 @@ class ExtractorSymbol:
             '"CrumbStore":{"crumb":"(.+?)"}', str(website.content))[0]
         self.cookies = website.cookies
 
-    def get_data(self):
-        countries_filter = [{
-            "operator": "EQ",
-            "operands": [
-                "region",
-                c
-            ]
-        } for c in self.countries]
+    def get_data(self) -> List[dict]:
+        """
+        Gets all the data fitting the provided filters.
+        :return: A list of dictionaries containing all the information needed for posterior fundamental analysis
+        """
+
+        countries_filter = [{"operator": "EQ", "operands": ["region", c]} for c in self.countries]
 
         body = {
             "size": 200,
@@ -88,9 +111,3 @@ class ExtractorSymbol:
 
             quotes.extend(data['quotes'])
         return quotes
-
-
-if __name__ == '__main__':
-    ex = ExtractorSymbol(["us"])
-    d = ex.get_data()
-    print(d)

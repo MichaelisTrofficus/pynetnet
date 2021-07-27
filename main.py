@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 
 from PyInquirer import style_from_dict, Token, prompt, Separator
-from netnet.ExtractorSymbol import ExtractorSymbol
+from pynetnet.YahooScreener import YahooScreener
 
 style = style_from_dict({
     Token.Separator: '#cc5454',
@@ -257,6 +257,6 @@ questions = [
 if __name__ == '__main__':
     answers = prompt(questions, style=style)
 
-    ex = ExtractorSymbol(answers['regions'])
+    ex = YahooScreener(answers['regions'])
     d = ex.get_data()
     print(d)
