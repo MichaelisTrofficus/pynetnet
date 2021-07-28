@@ -147,14 +147,3 @@ class NetNetFilter:
                 net_nets.append(company)
 
         return net_nets
-
-
-
-
-
-
-
-
-
-
-
