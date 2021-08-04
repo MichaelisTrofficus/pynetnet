@@ -29,22 +29,20 @@ class YahooRepository:
         companies = []
 
         for ticker in tqdm(tickers):
-            fundamentals = yahoo_api.get_data(ticker)
             try:
+                fundamentals = yahoo_api.get_data(ticker)
                 company = Company(fundamentals)
                 companies.append(company)
             except InvalidCompanyError:
-                logging.info(f"Company with ticker {ticker} with invalid data")
-
-        # TODO: Add code for ThreadPoolExecutor.
-        # with ThreadPoolExecutor(max_workers=MAX_NUM_WORKERS) as pool:
-        #   results = list(tqdm(pool.map(yahoo_api.get_data, range(len(tickers))), total=len(tickers)))
+                logging.warning(f"Company with ticker {ticker} with invalid data")
+            except Exception as e:
+                logging.warning(f"Unknown error with ticker {ticker}")
 
         return companies
 
 
 if __name__ == "__main__":
-
     yahoo_repository = YahooRepository(["us"])
-    yahoo_repository.get()
+    companies = yahoo_repository.get()
+    print(1)
 

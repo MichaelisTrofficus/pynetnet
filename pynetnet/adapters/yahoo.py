@@ -111,7 +111,10 @@ class YahooScreener:
             try:
                 data = json.loads(response.content).get('finance').get('result')[0]
             except json.decoder.JSONDecodeError:
-                logging.info("Data not received from Yahoo Finance")
+                logging.error("Data not received from Yahoo Finance. Please, try again later")
+                return []
+            except TypeError:
+                logging.error("Data not received from Yahoo Finance. Plase, try again later")
                 return []
 
             if body['offset'] > data['total']:
